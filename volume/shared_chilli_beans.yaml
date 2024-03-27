@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sharedchillibeans
+  namespace: default
+spec:
+  containers:
+  - name: alphacont
+    image: busybox
+    command:
+    - sleep
+    - "3600"
+    volumeMounts:
+    - mountPath: /alphadir
+      name: sharevol
+  - name: betacont
+    image: busybox
+    command:
+    - sleep
+    - "3600"  
+    volumeMounts:
+      - mountPath: /betadir
+        name: sharevol
+  volumes:
+    - name: sharevol
+      emptyDir: {}
