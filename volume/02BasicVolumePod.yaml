@@ -11,9 +11,15 @@ spec:
     - sleep
     - "3600"
     volumeMounts:
-    - mountPath: /scratch
-      name: scratch-volume
+    - mountPath: /opt
+      name: nfs-vol
   volumes:
-    - name: scratch-volume
+    - name: nfs-vol
       persistentVolumeClaim:
-        claimName: myclaim
+        claimName: pvc-one
+  tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Equal"
+    effect: "NoSchedule"
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""

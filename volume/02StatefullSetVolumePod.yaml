@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: logi-statefulset
+  namespace: default
+spec:
+  replicas: 3  # Adjust the number of replicas as needed
+  serviceName: "stateflogi"
+  selector:
+    matchLabels:
+      app: stateflogi
+  template:
+    metadata:
+      labels:
+        app: stateflogi
+    spec:
+      containers:
+      - image: busybox
+        name: stateflogi
+        command:
+        - sleep
+        - "3600"
+        volumeMounts:
+        - mountPath: /opt
+          name: nfs-vol
+      volumes:
+      - name: nfs-vol
+        persistentVolumeClaim:
+          claimName: pvc-one
+      tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Equal"
+        effect: "NoSchedule"
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""

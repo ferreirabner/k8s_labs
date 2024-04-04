@@ -1,13 +1,16 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: 10Gpv01
+  name: pvvol-1
   labels:
     type: local
 spec:
   capacity:
-    storage: 10Gi
+    storage: 1Gi
   accessModes:
     - ReadWriteOnce
-  hostPath:
-    path: "/somepath/data01"
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    path: /opt/sfw
+    server: cp-0
+    readOnly: false
