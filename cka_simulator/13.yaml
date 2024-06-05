@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: multi-container-playground
+  name: multi-container-playground
+spec:
+  volumes:
+    - name: task-pv-storage
+      emptyDir: {}
+  containers:
+  - image: nginx:1.17.6-alpine
+    name: c1
+    volumeMounts:
+      - name: task-pv-storage
+        mountPath: "/vol"
+    env:
+    - name: MY_NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+    resources: {}
+  - image: busybox:1.31.1
+    name: c2
+    volumeMounts:
+      - name: task-pv-storage
+        mountPath: "/vol"
+    command: ['sh','-c', 'while true; do date >> /vol/date.log; sleep 1; done']
+    resources: {}
+  - image: busybox:1.31.1
+    name: c3
+    volumeMounts:
+      - name: task-pv-storage
+        mountPath: "/vol"
+    command: ['sh', '-c', 'tail -f /vol/date.log']
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
